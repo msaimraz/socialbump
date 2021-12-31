@@ -6,31 +6,25 @@ import VideoCallIcon from '@mui/icons-material/VideoCall';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import './style.css'
-import UserName from "../Header/Profile/UserName"
-import { db, storage, auth } from '../../firebase/firebase';
+import { db, storage } from '../../firebase/firebase';
 import firebase from 'firebase';
 import { useAuth } from '../../context/AuthContext';
 
-const CreatePost = () => {
+const CreatePost2 = () => {
     const [open, setOpen] = useState(false);
     const [image, setImage] = useState("");
     const [message, setMessage] = useState("");
     const [progress, setProgress] = useState(0);
+    const [postContentWithoutImage, setPostContentWithoutImage] = useState([]);
+    const [postContentWithImage, setPostContentWithImage] = useState([]);
     const { currentUser } = useAuth();
-
-    const [usernames, setUsernames] = useState({ username: "" })
-    useEffect(() => {
-        auth.onAuthStateChanged(() => {
-            const userEmail = auth.currentUser.email;
-            setUsernames(() => ({ username: UserName(userEmail) }))
-        })
-    }, []);
-    const { username } = usernames;
-
+    let unsubscribe = () => [];
     const [profile, setProfile] = useState({
         Name: "",
+        Bio: "",
         Photo: "",
     });
+
     const { Name, Photo } = profile;
     useEffect(() => {
         db.collection("Profile").doc(currentUser.uid).get().then(doc => {
@@ -42,7 +36,6 @@ const CreatePost = () => {
                 console.log("No Doc available");
             }
         })
-
     }, [])
     const handleClose = () => {
         setOpen(false)
@@ -61,21 +54,41 @@ const CreatePost = () => {
             setImage(e.target.files[0]);
         }
     }
+    useEffect(() => {
+        const docRef = db.collection('Posts').doc(currentUser.uid)
+        unsubscribe = docRef.onSnapshot(docSnap => {
+            if (docSnap.exists) {
+                setPostContentWithoutImage(docSnap.data(({
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    message: message,
+                    username: { Name },
+                    profilePic: { Photo }
+                })))
+                setPostContentWithImage(docSnap.data(({
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    message: message,
+                    username: { Name },
+                    profilePic: { Photo },
+                    // image: url
+                })))
+            } else {
+                console.log("nothing");
+            }
+        });
+        return () => {
+            unsubscribe()
+        }
+    }, [])
     const handleSubmit = (e) => {
         e.preventDefault();
         if (image === "") {
-            db.collection("posts").add({
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                message: message,
-                name: { Name },
-                profilePic: { Photo },
-                username,
+            db.collection("Posts").doc(currentUser.uid).set({
+                
             });
             handleClose();
-            setMessage("");
         }
         else {
-            const uploadTask = storage.ref(`Images/${image.name}`).put(image);
+            const uploadTask = storage.ref(`Images2/${image.name}`).put(image);
             uploadTask.on("state_changed",
                 snapshot => {
                     const progress = Math.round(
@@ -86,16 +99,15 @@ const CreatePost = () => {
                 error => { console.log(error); },
                 () => {
                     storage
-                        .ref("Images")
+                        .ref("Images2")
                         .child(image.name)
                         .getDownloadURL()
                         .then(url => {
-                            db.collection("posts").add({
+                            db.collection("Posts").doc(currentUser.uid).set({
                                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                                 message: message,
-                                name: { Name },
+                                username: { Name },
                                 profilePic: { Photo },
-                                username,
                                 image: url
                             });
                             handleClose();
@@ -192,4 +204,4 @@ const CreatePost = () => {
     )
 }
 
-export default CreatePost;
+export default CreatePost2;

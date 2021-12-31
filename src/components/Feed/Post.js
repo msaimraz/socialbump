@@ -5,7 +5,7 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import './style.css'
-const Post = ({  username, profilePic, timestamp, message, image }) => {
+const Post = ({  name, profilePic, timestamp, message, image }) => {
     return (
         <div className='createPost'>
             <div className='post'>
@@ -18,7 +18,7 @@ const Post = ({  username, profilePic, timestamp, message, image }) => {
                         />
                         <div className='postInfo'>
                             <h4>
-                                {username}
+                                {name}
                             </h4>
                             <p>
                                 {new Date(timestamp?.toDate()).toUTCString()}

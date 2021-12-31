@@ -31,24 +31,21 @@ const Profile = () => {
         Name: "",
         Bio: "",
         Photo: "",
-        uid: currentUser.uid, 
     });
 
-    const { Name, Bio, Photo, uid } = profile;
+    const { Name, Bio, Photo } = profile;
     useEffect(() => {
         db.collection("Profile").doc(currentUser.uid).get().then(doc => {
             if (doc.exists) {
-                const { Bio, Name } = doc.data();
-                setProfile(prev => ({...prev, Bio, Name, Photo}))
+                const { Bio, Name,Photo } = doc.data();
+                setProfile(prev => ({ ...prev, Bio, Name, Photo }))
             }
-            
             else {
                 console.log("No Doc available");
             }
         })
-        // console.log(uid);
     }, [])
-    
+
     return (
         <CssBaseline >
             <div  >
@@ -67,8 +64,6 @@ const Profile = () => {
                                     />
                                 </Stack>
                             </IconButton>
-
-                            {/* <IconButton sx={{ mt: 7, ml: -3 }} className='iconBtn2'><UploadIcon /></IconButton> */}
                         </Box>
 
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', m: 2, p: 1 }}>

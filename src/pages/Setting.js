@@ -6,7 +6,7 @@ import './style.css';
 
 const Setting = () => {
     return (
-        <div className='main'>
+        <div className='main2'>
             <NavBar />
             <Profile />
             {/* <UpdateProfile /> */}

@@ -5,25 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 
 const Feed = () => {
     const [posts, setPosts] = useState([]);
-    const { currentUser } = useAuth();
-    const [profile, setProfile] = useState({
-        Name: "",
-        Bio: "",
-        Photo: "",
-    });
 
-    const { Name, Bio, Photo } = profile;
-    useEffect(() => {
-        db.collection("Profile").doc(currentUser.uid).get().then(doc => {
-            if (doc.exists) {
-                const { Bio, Name, Photo } = doc.data();
-                setProfile(prev => ({ ...prev, Bio, Name, Photo }))
-            }
-            else {
-                console.log("No Doc available");
-            }
-        })
-    }, [])
     useEffect(() => {
         db.collection("posts").orderBy("timestamp", "desc").onSnapshot(snapshot => {
             setPosts(snapshot.docs.map(doc => ({
@@ -38,11 +20,11 @@ const Feed = () => {
                 posts.map(post => {
                     return <Post
                         key={post.id}
-                        profilePic={Photo.url}
-                        username={Name}
+                        name={post.data.name.Name}
                         timestamp={post.data.timestamp}
                         message={post.data.message}
                         image={post.data.image}
+                        profilePic={post.data.profilePic.Photo.url}
                     />
                 })
             }

@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Tooltip, MenuItem, CssBaseline , Alert} from '@mui/material';
+import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Tooltip, MenuItem, CssBaseline, Alert } from '@mui/material';
 import '../style.css';
 import { useAuth } from '../../context/AuthContext';
 import SearchBar from './Search/SearchBar';
+import { db } from '../../firebase/firebase';
 
 const NavBar = () => {
     const [error, setError] = useState('');
-    const {logout} = useAuth();
+    const { logout } = useAuth();
     const navigate = useNavigate();
+    const { currentUser } = useAuth();
 
     const logoutHandler = async () => {
         setError('')
@@ -44,7 +46,23 @@ const NavBar = () => {
             }
         }
     ];
+    const [profile, setProfile] = useState({
+        Name: "",
+        Photo: "",
+    });
 
+    const { Name, Photo } = profile;
+    useEffect(() => {
+        db.collection("Profile").doc(currentUser.uid).get().then(doc => {
+            if (doc.exists) {
+                const { Name, Photo } = doc.data();
+                setProfile(prev => ({ ...prev, Name, Photo }))
+            }
+            else {
+                console.log("No Doc available");
+            }
+        })
+    }, [])
     const [anchorElUser, setAnchorElUser] = useState(null);
 
     const handleOpenUserMenu = (event) => {
@@ -61,15 +79,11 @@ const NavBar = () => {
             <AppBar root position="static" className='navBar'>
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
-                        <Typography
-                            variant="h6"
-                            noWrap
-                            component="div"
-                            onClick={logo}
-                            sx={{ flexGrow: 1, mr: 2, display: { xs: 'flex', md: 'flex' } }}
-                        >
-                            SocialBump
-                        </Typography>
+                        <Container sx={{ flexGrow: 1, mr: 2, display: { xs: 'flex', md: 'flex' } }} >
+                            <img src="SocialBump.png" onClick={logo} style={{
+                                "imageRendering": "-webkit-optimize-contrast", "width": "35vh"
+                            }} />
+                        </Container>
                         <div>
                             <SearchBar />
                         </div>
@@ -77,7 +91,7 @@ const NavBar = () => {
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                     <Avatar
-                                        // src={URL}
+                                        src={Photo.url}
                                     />
                                 </IconButton>
                             </Tooltip>
@@ -103,7 +117,7 @@ const NavBar = () => {
                                     </MenuItem>
                                 ))}
                             </Menu>
-                        {error && <Alert variant="danger">{error}</Alert>}
+                            {error && <Alert variant="danger">{error}</Alert>}
                         </Box>
                     </Toolbar>
                 </Container>

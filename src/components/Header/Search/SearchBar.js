@@ -77,8 +77,9 @@ const SearchBar = () => {
     const searchData = (e) => {
         const foundedUser = suggestionData[0];
         setDataStore(foundedUser);
-        Navigate(`/${foundedUser.uid}`)
-        console.log(dataStore);
+        Navigate(`/${foundedUser.username}`);
+        // window.location.reload();
+        // console.log(dataStore);
     }
     return (
         <div>
@@ -98,7 +99,7 @@ const SearchBar = () => {
                 />
             </Search>
             <div className="suggestions">
-                {suggestionData.length
+                {suggestionData
                     ?
                     suggestionData.map((obj) => {
                         return <div

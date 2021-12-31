@@ -2,12 +2,22 @@ import React, { useState, useEffect } from "react";
 import { CssBaseline, Typography, TextField, Card, IconButton, Stack, Avatar, Box } from '@mui/material';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'; import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'; import CheckCircleIcon from '@mui/icons-material/CheckCircle'; import UploadIcon from '@mui/icons-material/Upload'; import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import { styled } from '@mui/material/styles';
-import { db, storage } from '../../../firebase/firebase';
+import { db, storage, auth } from '../../../firebase/firebase';
 import { useAuth } from "../../../context/AuthContext";
 import '../../style.css'
+import UserName from "./UserName";
 
 const UpdateProfile = () => {
     const { currentUser } = useAuth();
+
+    const [usernames, setUsernames] = useState({ username: "" })
+    useEffect(() => {
+        auth.onAuthStateChanged(() => {
+            const userEmail = auth.currentUser.email;
+            setUsernames(() => ({ username: UserName(userEmail) }))
+        })
+    }, []);
+    const { username } = usernames;
 
     const Input = styled('input')({
         display: 'none',
@@ -41,14 +51,16 @@ const UpdateProfile = () => {
     };
     const [name, setName] = useState('');
     const [bio, setBio] = useState('');
+
     const addProfile = () => {
         db.collection('Profile').doc(currentUser.uid).set({
             Photo: { url },
             Name: name,
-            Bio: bio
+            Bio: bio,
+            uid: currentUser.uid,
+            username
         })
     }
-
     return (
         <CssBaseline >
             <div  >
@@ -64,6 +76,7 @@ const UpdateProfile = () => {
                                     <Stack>
                                         <Avatar
                                             src={url}
+                                            
                                             adefaultValue={url}
                                             sx={{ width: 60, height: 60 }}
                                         />

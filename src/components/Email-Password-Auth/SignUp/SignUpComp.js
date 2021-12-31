@@ -25,7 +25,7 @@ const SignUpComp = () => {
             setError("")
             setLoading(true)
             await signup(emailRef.current.value, passwordRef.current.value)
-            navigate("/")
+            navigate("/setting")
 
         }
 

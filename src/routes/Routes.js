@@ -29,7 +29,7 @@ const Routes = () => {
                             <Route path="*" element={<Dashboard />} />
                             <Route path="/" element={<Dashboard />} />
                             <Route path="/setting" element={<Setting />} />
-                            <Route path="/:uid" element={<User />} />
+                            <Route path="/:username" element={<User />} />
                         </>
                     }
                     { !currentUser &&
