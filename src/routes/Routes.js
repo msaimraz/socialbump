@@ -29,7 +29,7 @@ const Routes = () => {
                             <Route path="*" element={<Dashboard />} />
                             <Route path="/" element={<Dashboard />} />
                             <Route path="/setting" element={<Setting />} />
-                            <Route path="/:username" element={<User />} />
+                            <Route path="/profile/:username" element={<User />} />
                         </>
                     }
                     { !currentUser &&

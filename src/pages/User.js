@@ -1,8 +1,7 @@
-import React from 'react'
-// import { useParams } from 'react-router-dom';
+import React from 'react';
 import NavBar from '../components/Header/NavBar';
 import UserComp from '../components/Header/Search/UserComp';
-// import { db } from '../firebase/firebase';
+import './style.css';
 
 const User = () => {
 
@@ -14,4 +13,4 @@ const User = () => {
     )
 }
 
-export default User
+export default User;

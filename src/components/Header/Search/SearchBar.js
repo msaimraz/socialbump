@@ -77,7 +77,7 @@ const SearchBar = () => {
     const searchData = (e) => {
         const foundedUser = suggestionData[0];
         setDataStore(foundedUser);
-        Navigate(`/${foundedUser.username}`);
+        Navigate(`/profile/${foundedUser.username}`);
         // window.location.reload();
         // console.log(dataStore);
     }

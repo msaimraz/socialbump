@@ -80,7 +80,7 @@ const NavBar = () => {
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
                         <Container sx={{ flexGrow: 1, mr: 2, display: { xs: 'flex', md: 'flex' } }} >
-                            <img src="SocialBump.png" onClick={logo} style={{
+                            <img src="SocialBump.png" alt='SocialBump' onClick={logo} style={{
                                 "imageRendering": "-webkit-optimize-contrast", "width": "35vh"
                             }} />
                         </Container>
